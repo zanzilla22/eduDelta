@@ -11,13 +11,15 @@
     <form id="chatForm">
         <label for="message">Enter your message:</label>
         <input type="text" id="message" name="message" required>
-        <button type="button" onclick="sendMessage()">Send Message</button>
+        <button type="submit">Send Message</button>
     </form>
 
     <div id="response"></div>
 
     <script>
-        function sendMessage() {
+        document.getElementById("chatForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent the default form submission behavior
+
             var message = document.getElementById("message").value;
 
             fetch('http://localhost:5000/chat', {
@@ -34,7 +36,7 @@
             .catch((error) => {
                 console.error('Error:', error);
             });
-        }
+        });
     </script>
 
 </body>
