@@ -6,7 +6,7 @@ const Live2DViewer = () => {
     // Initialize Live2D widget
     const live2dWidget = new L2Dwidget({
       model: {
-        jsonPath: 'path/to/your/model.mrzane.model3.json', // Path to your Live2D model's .json file
+        jsonPath: 'path/to/your/mrzane.model3.json', // Path to your Live2D model's .json file
       },
       display: {
         superSample: 2,
