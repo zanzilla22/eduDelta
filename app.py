@@ -14,7 +14,7 @@ def chat():
     user_input = request.json.get('message', '')
 
     response = openai.Completion.create(
-        model="g-XYYou3Ysq-hacktheridge", 
+        model="asst_k1bMHyY9Vo0RO7sVZqWRXVg7", 
         prompt=user_input,
         max_tokens=150
     )
