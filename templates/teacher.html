@@ -90,7 +90,7 @@
 <body>
   <div class="main-container">
         <div class="header">
-            <h1>ESE Student Curriculum Index</h1>
+            <h1>ESE Lesson Plan Maker</h1>
         </div>
 
         <div class="nav-links">
@@ -99,7 +99,7 @@
         </div>
 
     <form id="chatForm">
-        <label for="message">Enter your message:</label>
+        <label for="message">Enter your lesson subject:</label>
         <input type="text" id="message" name="message" required>
 
         <label for="grade">Select Grade:</label>
@@ -128,7 +128,7 @@
             <option value="null">Science and Technology*</option>
 
         </select>
-        <button type="submit">Send Message</button>
+        <button type="submit">Generate Lesson Plan</button>
     </form>
 
     <div id="response"></div>
@@ -143,7 +143,7 @@
             var pdfUrl = `http://localhost:5000/cr/${subject}/${grade}`; // Ensure the URL is correct
 
             pdfToText(pdfUrl).then(pdfText => {
-                var finalMessage = "I am a Grade " + grade + "student trying to study "+subject+". Please answer my question: "+message+", using PRIMARILY YOUR OWN KNOWLEDGE and adhering to the following curriculum notes where possible in a simple paragraph format that I can understand - TALK LIKE A HUMAN!! Do not quote directly from the curriculum, and instead paraphrase in your own words using information from the curriculum . Here's the curriculum: "+ pdfText;
+                var finalMessage = "I am a teacher teaching Grade " + grade + " "+subject+" class. Please create a lesson plan for "+message+", using PRIMARILY YOUR OWN KNOWLEDGE and adhering to the following curriculum notes where possible in a simple paragraph format that I can understand - TALK LIKE A HUMAN!! Do not quote directly from the curriculum, and instead paraphrase in your own words using information from the curriculum . Here's the curriculum: "+ pdfText;
 
                 fetch('http://localhost:5000/chat', {
                     method: 'POST',

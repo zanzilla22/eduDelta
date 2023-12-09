@@ -32,6 +32,10 @@ def index():
 def ask():
     return render_template("asker.html")
 
+@app.route('/teacher')
+def teacher():
+    return render_template("teacher.html")
+
 @app.route('/chat', methods=['POST'])
 def chat():
     user_input = request.json.get('message', '')
