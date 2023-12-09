@@ -297,7 +297,27 @@ function App() {
   const audioPlayer = useRef();
 
   const [speak, setSpeak] = useState(false);
-  const [text, setText] = useState("My name is Arwen. I'm a virtual human who can speak whatever you type here along with realistic facial movements.");
+  const [text, setText] = useState(
+    fetch('http://localhost:5000/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: userMessage }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the server
+        const serverResponse = data.response;
+        console.log('Server Response:', serverResponse);
+
+        // Now you can use serverResponse in your app as needed
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle errors here
+      })
+  );
   const [audioSource, setAudioSource] = useState(null);
   const [playing, setPlaying] = useState(false);
 
