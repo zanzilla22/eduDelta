@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Set your OpenAI API key
-OpenAI.api_key = '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'
+OpenAI.api_key = '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'
 
 # Create an OpenAI client instance
 client = OpenAI(api_key=OpenAI.api_key)
@@ -30,6 +30,7 @@ def chat():
     print(f"Received message: {user_input}")
 
     # Make the OpenAI API call using the Assistants API
+
     response = client.assistants.create_message(
         assistant_id=assistant_id,
         message={
