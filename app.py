@@ -6,10 +6,13 @@ app = Flask(__name__)
 CORS(app)
 
 # Set your OpenAI API key
-OpenAI.api_key = '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'
+OpenAI.api_key = 'secret_key'
 
 # Create an OpenAI client instance
 client = OpenAI(api_key=OpenAI.api_key)
+
+# Define the assistant ID (replace 'your_assistant_id' with the actual ID)
+assistant_id = 'asst_k1bMHyY9Vo0RO7sVZqWRXVg7'
 
 @app.route('/')
 def index():
@@ -26,15 +29,17 @@ def chat():
     # Print the user input for debugging
     print(f"Received message: {user_input}")
 
-    # Make the OpenAI API call using the client instance
-    response = client.completions.create(
-        model="asst_k1bMHyY9Vo0RO7sVZqWRXVg7",
-        prompt=user_input,
-        max_tokens=150
+    # Make the OpenAI API call using the Assistants API
+    response = client.assistants.create_message(
+        assistant_id=assistant_id,
+        message={
+            "role": "user",
+            "content": user_input
+        }
     )
 
     # Extract the text response from the OpenAI API response
-    text_response = response.choices[0].text.strip() if response.choices else "No response generated."
+    text_response = response.get('choices', [{}])[0].get('message', {}).get('content', "No response generated.")
 
     # Print the OpenAI response for debugging
     print(f"Generated response: {text_response}")
