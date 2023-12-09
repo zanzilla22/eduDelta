@@ -18,6 +18,16 @@ assistant_id = 'asst_k1bMHyY9Vo0RO7sVZqWRXVg7'
 def index():
     return "Hello, prepare to learn with Mr. Zane!"
 
+@app.route('/docs/<id>')
+def get_pdf(id=None):
+    if id is not None:
+        binary_pdf = get_binary_pdf_data_from_database(id=id)
+        response = make_response(binary_pdf)
+        response.headers['Content-Type'] = 'Curicula/French Core [4-8]'
+        response.headers['Content-Disposition'] = \
+            'inline; filename=%s.pdf' % 'yourfilename'
+        return response
+
 @app.route('/testAsk')
 def ask():
     return render_template("asker.html")
