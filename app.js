@@ -1,7 +1,7 @@
 // App.js
 
 import React from 'react';
-import Live2DModel from './Live2DModel'; // Import your Live2D component
+import Live2DModel from './Live2DModelViewer'; // Import your Live2D component
 
 const App = () => {
   return (
