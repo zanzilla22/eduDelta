@@ -19,7 +19,7 @@ REDIRECT_URI = 'http://localhost:5000/callback'
 SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly']
 
 # Set your OpenAI API key
-openai.api_key = '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'
+openai.api_key = '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'
 
 # Define the GPT-4 model
 model_name = 'text-davinci-003'  # Replace with the appropriate GPT-4 model name when available
@@ -27,16 +27,6 @@ model_name = 'text-davinci-003'  # Replace with the appropriate GPT-4 model name
 @app.route('/')
 def index():
     return "Hello, prepare to learn with Mr. Zane!"
-
-@app.route('/docs/<id>')
-def get_pdf(id=None):
-    if id is not None:
-        binary_pdf = get_binary_pdf_data_from_database(id=id)
-        response = make_response(binary_pdf)
-        response.headers['Content-Type'] = 'Curicula/French Core [4-8]'
-        response.headers['Content-Disposition'] = \
-            'inline; filename=%s.pdf' % 'yourfilename'
-        return response
 
 @app.route('/testAsk')
 def ask():

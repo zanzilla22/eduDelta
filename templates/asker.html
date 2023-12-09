@@ -1,45 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label, select, input {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #eef2f7;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.5;
+            width: 100%;
+            max-width: 600px; /* Adjust based on your preference */
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
 
     <form id="chatForm">
         <label for="message">Enter your message:</label>
         <input type="text" id="message" name="message" required>
+
+        <label for="grade">Select Grade:</label>
+        <select id="grade" name="grade">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+
+        <label for="subject">Select Subject:</label>
+        <select id="subject" name="subject">
+            <option value="french-core">French (Core)</option>
+            <option value="french-immersion">French (Immersion)</option>
+            <option value="art">The Arts</option>
+            <option value="health">Health and Physical Education</option>
+            <option value="null">Geography*</option>
+            <option value="null">History*</option>
+            <option value="null">Language*</option>
+            <option value="null">Mathematics*</option>
+            <option value="null">Native Languages*</option>
+            <option value="null">Science and Technology*</option>
+
+        </select>
         <button type="submit">Send Message</button>
     </form>
 
     <div id="response"></div>
 
     <script>
-        document.getElementById("chatForm").addEventListener("submit", function(event) {
-            event.preventDefault();  // Prevent the default form submission behavior
+        document.getElementById("chatForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
 
+            var grade = document.getElementById("grade").value;
+            var subject = document.getElementById("subject").value;
             var message = document.getElementById("message").value;
-            console.log(message);
-            fetch('http://localhost:5000/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'OpenAI-Beta': 'assistants=v1'
-                },
-                body: JSON.stringify({ message: message }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                document.getElementById("response").innerHTML = 'Response: ' + data.response;
-            })
-            .catch((error) => {
-                console.error('Error:', error);
+            var pdfUrl = `http://localhost:5000/cr/${subject}/${grade}`; // Ensure the URL is correct
+
+            pdfToText(pdfUrl).then(pdfText => {
+                var finalMessage = "I am a Grade " + grade + "student trying to study "+subject+". Please answer my question: "+message+", using PRIMARILY YOUR OWN KNOWLEDGE and adhering to the following curriculum notes where possible in a simple paragraph format that I can understand - TALK LIKE A HUMAN!! Do not quote directly from the curriculum, and instead paraphrase in your own words using information from the curriculum . Here's the curriculum: "+ pdfText;
+
+                fetch('http://localhost:5000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: finalMessage
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById("response").innerHTML = 'Response: ' + data.response;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
             });
         });
+
+        async function pdfToText(data) {
+    try {
+        const pdf = await pdfjsLib.getDocument(data).promise;
+
+        let text = '';
+        let wordCount = 0;
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            const pageText = content.items.map(item => item.str).join(' ');
+
+            // Split page text into words and update the word count
+            const words = pageText.split(/\s+/);
+            if (wordCount + words.length > 1500) {
+                // Add only the number of words that fit in the limit
+                text += words.slice(0, 1500 - wordCount).join(' ');
+                break; // Stop processing as the limit is reached
+            } else {
+                text += pageText + ' ';
+                wordCount += words.length;
+            }
+        }
+        return text;
+    } catch (error) {
+        console.error('Error processing PDF: ', error);
+        return '';
+    }
+}
+
     </script>
+
 
 </body>
 </html>
