@@ -1,15 +1,28 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, redirect, url_for, render_template, session
+from flask import send_file, current_app as app
+
+
 from flask_cors import CORS
 import openai
+# from google.oauth2 import id_token
+# from google.auth.transport import requests
+# from googleapiclient.discovery import build
 
 app = Flask(__name__)
 CORS(app)
+app.secret_key = 'AIzaSyCMRzuXDIQ9uygtH1oi0zthlYLplMtmt90'
+
+# OAuth 2.0 Configuration
+CLIENT_ID = '64555406897-7fc007qom0nt45eunpp2vsc47pdtbrde.apps.googleusercontent.com'
+CLIENT_SECRET = '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'
+REDIRECT_URI = 'http://localhost:5000/callback'
+SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly']
 
 # Set your OpenAI API key
 openai.api_key = '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'
 
 # Define the GPT-4 model
-model_name = 'gpt-4'  # Replace with the appropriate GPT-4 model name when available
+model_name = 'text-davinci-003'  # Replace with the appropriate GPT-4 model name when available
 
 @app.route('/')
 def index():
@@ -54,6 +67,23 @@ def chat():
 
     # Return the response to the user
     return jsonify({"response": text_response})
+
+# ------ pdf hosting stuff ------
+
+@app.route('/cr/<string:subject>/<string:grade>')
+def show_static_pdf(subject, grade):
+    file_path = f'Curicula/{subject}/{subject}-{grade}.pdf'
+    print(file_path)  # Use print instead of console.log for server-side code
+    return send_file(file_path, mimetype='application/pdf')
+
+
+
+
+
+# --------- GOOGLE CLASSROOM SHIT --------------
+#
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
