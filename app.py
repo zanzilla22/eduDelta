@@ -1,18 +1,15 @@
-from openai import OpenAI
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+import openai
 
 app = Flask(__name__)
 CORS(app)
 
 # Set your OpenAI API key
-OpenAI.api_key = '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'
+openai.api_key = 'your_secret_key'
 
-# Create an OpenAI client instance
-client = OpenAI(api_key=OpenAI.api_key)
-
-# Define the assistant ID (replace 'your_assistant_id' with the actual ID)
-assistant_id = 'asst_k1bMHyY9Vo0RO7sVZqWRXVg7'
+# Define the GPT-4 model
+model_name = 'text-davinci-004'  # Replace with the appropriate GPT-4 model name when available
 
 @app.route('/')
 def index():
@@ -39,18 +36,18 @@ def chat():
     # Print the user input for debugging
     print(f"Received message: {user_input}")
 
-    # Make the OpenAI API call using the Assistants API
-
-    response = client.assistants.create_message(
-        assistant_id=assistant_id,
-        message={
-            "role": "user",
-            "content": user_input
-        }
-    )
-
-    # Extract the text response from the OpenAI API response
-    text_response = response.get('choices', [{}])[0].get('message', {}).get('content', "No response generated.")
+    # Make the OpenAI API call using the GPT-4 model
+    try:
+        response = openai.Completion.create(
+            model=model_name,
+            prompt=user_input,
+            max_tokens=150
+        )
+        # Extract the text response from the OpenAI API response
+        text_response = response.choices[0].text.strip() if response.choices else "No response generated."
+    except Exception as e:
+        print(f"Error: {e}")
+        text_response = "An error occurred while generating the response."
 
     # Print the OpenAI response for debugging
     print(f"Generated response: {text_response}")
