@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import openai
 
@@ -6,10 +6,10 @@ app = Flask(__name__)
 CORS(app)
 
 # Set your OpenAI API key
-openai.api_key = 'your_secret_key'
+openai.api_key = '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'
 
 # Define the GPT-4 model
-model_name = 'text-davinci-004'  # Replace with the appropriate GPT-4 model name when available
+model_name = 'gpt-4'  # Replace with the appropriate GPT-4 model name when available
 
 @app.route('/')
 def index():
@@ -38,7 +38,7 @@ def chat():
 
     # Make the OpenAI API call using the GPT-4 model
     try:
-        response = openai.Completion.create(
+        response = openai.completions.create(
             model=model_name,
             prompt=user_input,
             max_tokens=150
