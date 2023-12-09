@@ -1,0 +1,33 @@
+import React, { useEffect } from 'react';
+import L2Dwidget from 'live2d-widget';
+
+const Live2DViewer = () => {
+  useEffect(() => {
+    // Initialize Live2D widget
+    const live2dWidget = new L2Dwidget({
+      model: {
+        jsonPath: 'path/to/your/model.json', // Path to your Live2D model's .json file
+      },
+      display: {
+        superSample: 2,
+      },
+      mobile: {
+        show: true,
+      },
+      react: {
+        opacityDefault: 0.7,
+        opacityOnHover: 1,
+      },
+      devTools: {
+        mode: 'debug',
+      },
+    });
+
+    // Initialize the Live2D widget
+    live2dWidget.init();
+  }, []);
+
+  return <div id="live2d-canvas"></div>;
+};
+
+export default Live2DViewer;
